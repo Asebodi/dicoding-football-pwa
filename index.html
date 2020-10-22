@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#EEF3F6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Rasakan kelaparan dimanapun dan kapanpun!"
+    />
+    <link rel="icon" type="image/png" href="assets/icon192.png" />
+    <link rel="stylesheet" href="/css/materialize.min.css" />
+    <script src="/js/materialize.min.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Mangan</title>
+  </head>
+
+  <body class="blue-grey lighten-5">
+    <nav class="blue-grey darken-4" role="navigation">
+      <div class="nav-wrapper container">
+        <a href="#" class="brand-logo poppins" id="logo-container">
+          <div class="inner-nav-logo">
+            <img src="/assets/svg/navbar.svg" alt="Logo mangan" />
+          </div>
+        </a>
+        <a href="#" class="sidenav-trigger" data-target="nav-mobile">
+          <img src="/assets/svg/burger.svg" alt="" style="width: 24px" />
+        </a>
+
+        <ul class="topnav right hide-on-med-and-down"></ul>
+        <ul class="sidenav" id="nav-mobile"></ul>
+      </div>
+    </nav>
+
+    <div id="body-content"></div>
+
+    <!-- <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then(() => console.log("Service worker ter-install dengan sukses"))
+            .catch(() =>
+              console.log("Kesalahan dalam menginstall Service worker")
+            );
+        });
+      } else {
+        console.log("Service worker tidak didukung di browser ini");
+      }
+    </script> -->
+  </body>
+</html>
