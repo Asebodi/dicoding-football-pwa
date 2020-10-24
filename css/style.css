@@ -38,17 +38,6 @@ nav .sidenav-trigger {
           align-items: center;
 }
 
-.teams-container {
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  overflow: hidden;
-  overflow-x: scroll;
-  gap: 2rem;
-  padding-bottom: 1rem;
-}
-
 .btn-floating i {
   font-size: 1.3rem;
 }
@@ -92,7 +81,7 @@ nav .sidenav-trigger {
   background-image: url("/assets/header.jpg");
   background-repeat: no-repeat;
   background-size: cover;
-  height: 30vw;
+  height: 300px;
   position: relative;
 }
 
@@ -155,6 +144,38 @@ nav .sidenav-trigger {
 
 .home-wrapper .home-fav .no-fav h5 {
   margin: 0;
+}
+
+.teams-container .card {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 2rem;
+}
+
+.teams-container .card .team-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.teams-container .card .team-title img {
+  width: 100px;
+  margin-right: 4rem;
+}
+
+.teams-container .card .fav-action {
+  width: 30px;
 }
 
 .home-wrapper header {
