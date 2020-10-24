@@ -1,4 +1,4 @@
-const CACHE_NAME = "mangan-v2";
+const CACHE_NAME = "football-v2";
 
 const urlsToCache = [
   "/",

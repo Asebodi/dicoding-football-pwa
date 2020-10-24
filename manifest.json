@@ -1,5 +1,6 @@
 {
   "name": "Mangan",
+  "gcm_sender_id": "194336089636",
   "short_name": "Mangan",
   "description": "Rasakan kelaparan dimanapun dan kapanpun!",
   "start_url": "/index.html",
