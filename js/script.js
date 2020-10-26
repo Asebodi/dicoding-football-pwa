@@ -1,5 +1,3 @@
-let teamsData
-
 document.addEventListener("DOMContentLoaded", function () {
   // Query selector navigasi
   const elems = document.querySelectorAll(".sidenav");
@@ -47,7 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadHome() {
+  showLoader();
+
   const standings = getStandings();
+  const fav = getAll();
   let standingFetch = `
     <tr>
       <th>Tim</th>
@@ -57,68 +58,84 @@ function loadHome() {
     </tr>
   `;
 
-  standings.then((data) => {
-    let html = "";
+  fav.then((favTeam) => {
+    standings.then((data) => {
+      let html = "";
 
-    for (i = 0; i < 5; i++) {
-      standingFetch += `
-        <tr>
-          <td>${data.standings[0].table[i].team.name}</td>
-          <td class="center-align">${data.standings[0].table[i].won}</td>
-          <td class="center-align">${data.standings[0].table[i].draw}</td>
-          <td class="center-align">${data.standings[0].table[i].lost}</td>
-        </tr>
+      for (i = 0; i < 5; i++) {
+        standingFetch += `
+          <tr>
+            <td>${data.standings[0].table[i].team.name}</td>
+            <td class="center-align">${data.standings[0].table[i].won}</td>
+            <td class="center-align">${data.standings[0].table[i].draw}</td>
+            <td class="center-align">${data.standings[0].table[i].lost}</td>
+          </tr>
+        `;
+      }
+
+      let favDisplay = ``;
+
+      if (favTeam.length == 0) {
+        favDisplay += `<div class="card no-fav home-fav-item center-align"> <h5>Belum ada team favorit!</h5> </div>`;
+      } else if (favTeam.length < 2) {
+        favDisplay += `
+            <div class="card center-align home-fav-item">
+              <img src="${favTeam[0].crest}" alt="${favTeam[0].shortName}" />
+              <p class="flow-text">${favTeam[0].name}</p>
+            </div>
+          `;
+      } else {
+        for (i = 0; i < 2; i++) {
+          favDisplay += `
+            <div class="card center-align home-fav-item">
+              <img src="${favTeam[i].crest}" alt="${favTeam[i].shortName}" />
+              <p class="flow-text">${favTeam[i].name}</p>
+            </div>
+          `;
+        }
+      }
+
+      html += `
+      <div class="home-wrapper">
+        <div class="home-header">
+          <div class="bg"></div>
+          <div class="container header-content white-text">
+            <div class="header-content-inner">
+              <h2>Bola</h2>
+              <p>Sumber informasi bola Liga Inggris</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="container">
+          <h4 class="center-align">Tim Favorit</h4>
+          <div class="home-fav">
+            ${favDisplay}
+          </div>
+          <a href="#favorite" class="more right-align" onclick="loadFav()">Lebih lanjut..</a>
+  
+          <h4 class="center-align">Klasemen</h4>
+          <p class="center-align" style="display: block; margin-top: -10px">
+            Top 5
+          </p>
+          <div class="standing-container">
+            <table class="card standing-table striped">${standingFetch}</table>
+  
+            <a href="#standing" class="more right-align" onclick="loadStandings()">Lebih lanjut..</a>
+          </div>
+        </div>
+      </div>
       `;
-    }
 
-    html += `
-    <div class="home-wrapper">
-      <div class="home-header">
-        <div class="bg"></div>
-        <div class="container header-content white-text">
-          <div class="header-content-inner">
-            <h2>Bola</h2>
-            <p>Sumber informasi bola Liga Inggris</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="container">
-        <h4 class="center-align">Tim Favorit</h4>
-        <div class="home-fav">
-          <!-- <div class="card no-fav home-fav-item center-align">
-            <h5>Belum ada favorit!</h5>
-          </div> -->
-          <div class="card center-align home-fav-item">
-            <img src="/assets/everton.svg" alt="" />
-            <p class="flow-text">Everton</p>
-          </div>
-
-          <div class="card center-align home-fav-item">
-            <img src="/assets/everton.svg" alt="" />
-            <p class="flow-text">Manchester United</p>
-          </div>
-        </div>
-        <a href="#favorite" class="more right-align">Lebih lanjut..</a>
-
-        <h4 class="center-align">Klasemen</h4>
-        <p class="center-align" style="display: block; margin-top: -10px">
-          Top 5
-        </p>
-        <div class="standing-container">
-          <table class="card standing-table">${standingFetch}</table>
-
-          <a href="#standing" class="more right-align">Lebih lanjut..</a>
-        </div>
-      </div>
-    </div>
-    `;
-
-    document.querySelector("#body-content").innerHTML = html;
+      document.querySelector("#body-content").innerHTML = html;
+      // showLoader();
+    });
   });
 }
 
 function loadStandings() {
+  showLoader();
+
   const standings = getStandings();
   let standingFetch = `
     <tr>
@@ -161,32 +178,93 @@ function loadStandings() {
 }
 
 function loadTeams() {
+  showLoader();
+
   const teams = getTeams();
+  const fav = getAll();
+  fav.then((data) => console.log(data));
+
   let html = "";
   let teamsFetch = "";
 
-  teams.then((data) => {
-    data.teams.map((team) => {
-      teamsFetch += `
-        <div class="card">
-          <div class="team-title">
-            <img src="${team.crestUrl}" alt="Logo ${team.shortName}" />
-            <strong class="flow-text">${team.name}</strong>
+  fav.then((favData) => {
+    teams.then((data) => {
+      data.teams.map((team) => {
+        function checkFav(fav) {
+          return fav.id == team.id;
+        }
+
+        const heart =
+          favData.filter(checkFav).length !== 0
+            ? "/assets/svg/heart-solid.svg"
+            : "/assets/svg/heart-regular.svg";
+
+        teamsFetch += `
+          <div class="card">
+            <div class="team-title">
+              <img src="${team.crestUrl}" alt="Logo ${team.shortName}" />
+              <strong class="flow-text">${team.name}</strong>
+            </div>
+            <div class="fav-action wafe-effect" onclick="addTeam(${team.id}, '${team.crestUrl}', '${team.name}', '${team.shortName}')" >
+              <img src="${heart}" alt="" />
+            </div>
           </div>
-          <div class="fav-action">
-            <img src="/assets/heart-regular.svg" alt="" />
-          </div>
+        `;
+      });
+
+      html += `
+        <div class="teams-container container">
+          <h3 class="center-align">Tim</h3>
+          <p class="center-align" style="display: block; margin-top: -10px">
+            Liga Inggris
+          </p>
+          ${teamsFetch}
         </div>
       `;
+
+      document.querySelector("#body-content").innerHTML = html;
     });
+  });
+}
+
+function loadFav() {
+  showLoader();
+
+  const teams = getAll();
+
+  let favTeams = ``;
+  let html = ``;
+
+  teams.then((data) => {
+    console.log(data);
+
+    if (data.length == 0) {
+      favTeams += `<div class="card no-fav home-fav-item center-align"> <h5 style="width: 100%">Belum ada team favorit!</h5> </div>`;
+    } else {
+      data.map((team) => {
+        favTeams += `
+          <div class="card">
+            <div class="team-title">
+              <img src="${team.crest}" alt="Logo ${team.shortName}" />
+              <strong class="flow-text">${team.name}</strong>
+            </div>
+            <div class="fav-action">
+              <img src="/assets/svg/trash.svg" alt="Hapus team" onclick="deleteTeam(${team.id})" />
+            </div>
+          </div>
+        `;
+      });
+    }
 
     html += `
       <div class="teams-container container">
-        <h3 class="center-align">Tim</h3>
+        <h3 class="center-align">Tim Favorit</h3>
         <p class="center-align" style="display: block; margin-top: -10px">
           Liga Inggris
         </p>
-        ${teamsFetch}
+        
+        ${favTeams}
+
       </div>
     `;
 
@@ -194,42 +272,12 @@ function loadTeams() {
   });
 }
 
-function loadFav() {
-  const teams = getTeams();
-
-  teams.then(data => {
-    teamsData = data
-
-    
-  })
-
-  let html = `
-    <div class="teams-container container">
-      <h3 class="center-align">Tim Favorit</h3>
-      <p class="center-align" style="display: block; margin-top: -10px">
-        Liga Inggris
-      </p>
-            <div class="card">
-            <div class="team-title">
-              <img src="/assets/everton.svg" alt="" />
-              <strong class="flow-text">$Everton</strong>
-            </div>
-            <div class="fav-action">
-              <img src="/assets/trash.svg" alt="" />
-            </div>
-          </div>
-          <div class="card">
-            <div class="team-title">
-              <img src="/assets/everton.svg" alt="" />
-              <strong class="flow-text">$Everton</strong>
-            </div>
-            <div class="fav-action">
-              <img src="/assets/trash.svg" alt="" />
-            </div>
-          </div>
+function showLoader() {
+  const html = `
+    <div class="loader-container">
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
   `;
-  let favTeams = ``;
 
   document.querySelector("#body-content").innerHTML = html;
 }
