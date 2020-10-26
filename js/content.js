@@ -58,8 +58,11 @@ function loadHome() {
     </tr>
   `;
 
-  fav.then((favTeam) => {
+  fav.then((favRaw) => {
     standings.then((data) => {
+      const favJson = JSON.stringify(favRaw).replace(/http:/g, "https:");
+      const favTeam = JSON.parse(favJson);
+
       let html = "";
 
       for (i = 0; i < 5; i++) {
@@ -101,7 +104,7 @@ function loadHome() {
           <div class="bg"></div>
           <div class="container header-content white-text">
             <div class="header-content-inner">
-              <h2>Bola</h2>
+              <img src="/assets/logo.svg" class="header-logo" style="height: 2.5rem"></img>
               <p>Sumber informasi bola Liga Inggris</p>
             </div>
           </div>
@@ -182,13 +185,16 @@ function loadTeams() {
 
   const teams = getTeams();
   const fav = getAll();
-  fav.then((data) => console.log(data));
+  // fav.then((data) => console.log(data));
 
   let html = "";
   let teamsFetch = "";
 
   fav.then((favData) => {
-    teams.then((data) => {
+    teams.then((dataRaw) => {
+      const dataJson = JSON.stringify(dataRaw).replace(/http:/g, "https:");
+      const data = JSON.parse(dataJson);
+
       data.teams.map((team) => {
         function checkFav(fav) {
           return fav.id == team.id;
@@ -235,8 +241,9 @@ function loadFav() {
   let favTeams = ``;
   let html = ``;
 
-  teams.then((data) => {
-    console.log(data);
+  teams.then((rawData) => {
+    const favJson = JSON.stringify(rawData).replace(/http:/g, "https:");
+    const data = JSON.parse(favJson);
 
     if (data.length == 0) {
       favTeams += `<div class="card no-fav home-fav-item center-align"> <h5 style="width: 100%">Belum ada team favorit!</h5> </div>`;

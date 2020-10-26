@@ -27,10 +27,12 @@ function addTeam(id, crest, name, shortName) {
     })
     .then(function () {
       console.log("Team berhasil disimpan.");
-      location.reload();
+      loadTeams();
+      M.toast({ html: "Team berhasil disimpan!" });
     })
     .catch(function () {
       console.log("Team gagal disimpan.");
+      M.toast({ html: "Team sudah disimpan!" });
     });
 }
 
@@ -58,6 +60,7 @@ function deleteTeam(id) {
     })
     .then(function () {
       console.log("Team telah dihapus");
-      location.reload();
+      M.toast({ html: "Team berhasil dihapus" });
+      loadFav();
     });
 }
