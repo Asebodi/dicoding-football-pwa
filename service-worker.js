@@ -6,38 +6,25 @@ const urlsToCache = [
   "/manifest.json",
   "/index.html",
   "/nav.html",
-  "/pages/home.html",
-  "/pages/explore.html",
-  "/pages/about.html",
-  "/pages/contact.html",
-  "/js/script.js",
+  "/push.js",
+  "/js/content.js",
+  "/js/api.js",
+  "/js/db.js",
+  "/js/idb.js",
   "/js/materialize.min.js",
   "/css/style.css",
   "/css/style.css.map",
   "/css/materialize.min.css",
-  "/assets/about.jpg",
   "/assets/header.jpg",
-  "/assets/home.jpg",
-  "/assets/logo-black.png",
-  "/assets/logo.png",
-  "/assets/personal.jpg",
+  "/assets/logo.svg",
   "/assets/icon32.png",
   "/assets/icon96.png",
   "/assets/icon192.png",
   "/assets/icon512.png",
-  "/assets/icon192_maskable.png",
-  "/assets/icon512_maskable.png",
-  "/assets/explore/1.jpg",
-  "/assets/explore/2.jpg",
-  "/assets/explore/3.jpg",
-  "/assets/explore/4.jpg",
-  "/assets/explore/5.jpg",
-  "/assets/svg/navbar.svg",
   "/assets/svg/burger.svg",
-  "/assets/svg/favorite.svg",
-  "/assets/svg/github.svg",
-  "/assets/svg/instagram.svg",
-  "/assets/svg/web.svg",
+  "/assets/svg/heart-regular.svg",
+  "/assets/svg/heart-solid.svg",
+  "/assets/svg/trash.svg",
 ];
 
 self.addEventListener("install", (event) => {
@@ -69,5 +56,26 @@ self.addEventListener("activate", (event) => {
         })
       );
     })
+  );
+});
+
+self.addEventListener("push", function (event) {
+  var body;
+  if (event.data) {
+    body = event.data.text();
+  } else {
+    body = "Push message no payload";
+  }
+  var options = {
+    body: body,
+    icon: "img/notification.png",
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1,
+    },
+  };
+  event.waitUntil(
+    self.registration.showNotification("Push Notification", options)
   );
 });

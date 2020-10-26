@@ -1,12 +1,12 @@
 {
-  "name": "Mangan",
+  "name": "Bola - Liga Inggris",
   "gcm_sender_id": "194336089636",
-  "short_name": "Mangan",
-  "description": "Rasakan kelaparan dimanapun dan kapanpun!",
+  "short_name": "Bola",
+  "description": "Informasi Liga Inggris dimanapun dan kapanpun",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#EEF3F6",
-  "theme_color": "#EEF3F6",
+  "theme_color": "#E66076",
   "icons": [
     {
       "src": "/assets/icon32.png",
@@ -24,23 +24,11 @@
       "src": "/assets/icon192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/assets/icon192_maskable.png",
-      "sizes": "256x256",
-      "type": "image/png",
       "purpose": "maskable"
     },
     {
       "src": "/assets/icon512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/assets/icon512_maskable.png",
-      "sizes": "640x640",
       "type": "image/png",
       "purpose": "maskable"
     }
