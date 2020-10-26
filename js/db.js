@@ -1,40 +1,63 @@
-var dbPromised = idb.open("football-pwa", 1, function(upgradeDb) {
-  var articlesObjectStore = upgradeDb.createObjectStore("articles", {
-    keyPath: "ID"
-  });
-  articlesObjectStore.createIndex("post_title", "post_title", {
-    unique: false
-  });
+const dbPromised = idb.open("football-pwa", 1, function (upgradeDb) {
+  if (!upgradeDb.objectStoreNames.contains("teamFav")) {
+    var teamsObjectStore = upgradeDb.createObjectStore("teamFav", {
+      keyPath: "id",
+    });
+    teamsObjectStore.createIndex("team", "team", {
+      unique: true,
+    });
+  }
 });
 
-function saveForLater(article) {
+function addTeam(id, crest, name, shortName) {
+  const team = {
+    id,
+    crest,
+    name,
+    shortName,
+  };
+  console.log(team);
+
   dbPromised
-    .then(function(db) {
-      var tx = db.transaction("articles", "readwrite");
-      var store = tx.objectStore("articles");
-      console.log(article);
-      store.add(article.result);
+    .then(function (db) {
+      var tx = db.transaction("teamFav", "readwrite");
+      var store = tx.objectStore("teamFav");
+      store.add(team);
       return tx.complete;
     })
-    .then(function() {
-      console.log("Artikel berhasil di simpan.");
+    .then(function () {
+      console.log("Team berhasil disimpan.");
+      location.reload();
+    })
+    .catch(function () {
+      console.log("Team gagal disimpan.");
     });
 }
 
 function getAll() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     dbPromised
-      .then(function(db) {
-        var tx = db.transaction("articles", "readonly");
-        var store = tx.objectStore("articles");
+      .then(function (db) {
+        var tx = db.transaction("teamFav", "readonly");
+        var store = tx.objectStore("teamFav");
         return store.getAll();
       })
-      .then(function(articles) {
-        resolve(articles);
+      .then(function (teams) {
+        resolve(teams);
       });
   });
 }
 
-function addTeam(teamId) {
-  const team = 
+function deleteTeam(id) {
+  dbPromised
+    .then(function (db) {
+      var tx = db.transaction("teamFav", "readwrite");
+      var store = tx.objectStore("teamFav");
+      store.delete(id);
+      return tx.complete;
+    })
+    .then(function () {
+      console.log("Team telah dihapus");
+      location.reload();
+    });
 }
