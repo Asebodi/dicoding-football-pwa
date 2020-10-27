@@ -31,9 +31,44 @@ function error(error) {
 }
 
 function getStandings() {
-  return fetchApi(standingUrl).then(status).then(json);
+  return new Promise((resolve, reject) => {
+    if ("caches" in window) {
+      caches.match(standingUrl).then(function (response) {
+        if (response) {
+          response.json().then(function (data) {
+            resolve(data);
+          });
+        }
+      });
+    }
+
+    fetchApi(standingUrl)
+      .then(status)
+      .then(json)
+      .then(function (data) {
+        resolve(data);
+      });
+  });
 }
 
 function getTeams() {
-  return fetchApi(teamsUrl).then(status).then(json);
+  return new Promise((resolve, reject) => {
+    if ("caches" in window) {
+      caches.match(teamsUrl).then(function (response) {
+        if (response) {
+          response.json().then(function (data) {
+            console.log(data);
+            resolve(data);
+          });
+        }
+      });
+    }
+
+    fetchApi(teamsUrl)
+      .then(status)
+      .then(json)
+      .then(function (data) {
+        resolve(data);
+      });
+  });
 }

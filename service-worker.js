@@ -1,4 +1,4 @@
-const CACHE_NAME = "football-v2";
+const CACHE_NAME = "football-v1";
 
 const urlsToCache = [
   "/",
@@ -34,15 +34,23 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request, { cacheName: CACHE_NAME }).then((res) => {
-      if (res) {
-        return res;
-      }
-
-      return fetch(event.request);
-    })
-  );
+  const base_url = "https://api.football-data.org/v2/";
+  if (event.request.url.indexOf(base_url) > -1) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(function (cache) {
+        return fetch(event.request).then(function (response) {
+          cache.put(event.request.url, response.clone());
+          return response;
+        });
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(function (response) {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
 
 self.addEventListener("activate", (event) => {
@@ -59,14 +67,14 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-self.addEventListener("push", function (event) {
-  var body;
+self.addEventListener("push", (event) => {
+  let body;
   if (event.data) {
     body = event.data.text();
   } else {
     body = "Push message no payload";
   }
-  var options = {
+  const options = {
     body: body,
     icon: "img/notification.png",
     vibrate: [100, 50, 100],
