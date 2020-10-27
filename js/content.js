@@ -185,7 +185,6 @@ function loadTeams() {
 
   const teams = getTeams();
   const fav = getAll();
-  // fav.then((data) => console.log(data));
 
   let html = "";
   let teamsFetch = "";
