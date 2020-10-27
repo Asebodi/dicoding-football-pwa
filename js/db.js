@@ -1,6 +1,6 @@
-const dbPromised = idb.open("football-pwa", 1, function (upgradeDb) {
+const dbPromised = idb.open("football-pwa", 1, (upgradeDb) => {
   if (!upgradeDb.objectStoreNames.contains("teamFav")) {
-    var teamsObjectStore = upgradeDb.createObjectStore("teamFav", {
+    const teamsObjectStore = upgradeDb.createObjectStore("teamFav", {
       keyPath: "id",
     });
     teamsObjectStore.createIndex("team", "team", {
@@ -19,32 +19,32 @@ function addTeam(id, crest, name, shortName) {
   console.log(team);
 
   dbPromised
-    .then(function (db) {
-      var tx = db.transaction("teamFav", "readwrite");
-      var store = tx.objectStore("teamFav");
+    .then((db) => {
+      const tx = db.transaction("teamFav", "readwrite");
+      const store = tx.objectStore("teamFav");
       store.add(team);
       return tx.complete;
     })
-    .then(function () {
+    .then(() => {
       console.log("Team berhasil disimpan.");
       loadTeams();
       M.toast({ html: "Team berhasil disimpan!" });
     })
-    .catch(function () {
+    .catch(() => {
       console.log("Team gagal disimpan.");
-      M.toast({ html: "Team sudah disimpan!" });
+      M.toast({ html: "Team sudah disimpan!", classes: "red  darken-2" });
     });
 }
 
 function getAll() {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     dbPromised
-      .then(function (db) {
-        var tx = db.transaction("teamFav", "readonly");
-        var store = tx.objectStore("teamFav");
+      .then((db) => {
+        const tx = db.transaction("teamFav", "readonly");
+        const store = tx.objectStore("teamFav");
         return store.getAll();
       })
-      .then(function (teams) {
+      .then((teams) => {
         resolve(teams);
       });
   });
@@ -52,13 +52,13 @@ function getAll() {
 
 function deleteTeam(id) {
   dbPromised
-    .then(function (db) {
-      var tx = db.transaction("teamFav", "readwrite");
-      var store = tx.objectStore("teamFav");
+    .then((db) => {
+      const tx = db.transaction("teamFav", "readwrite");
+      const store = tx.objectStore("teamFav");
       store.delete(id);
       return tx.complete;
     })
-    .then(function () {
+    .then(() => {
       console.log("Team telah dihapus");
       M.toast({ html: "Team berhasil dihapus" });
       loadFav();
