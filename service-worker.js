@@ -1,82 +1,73 @@
-const CACHE_NAME = "football-v1";
+importScripts(
+  "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js"
+);
 
 const urlsToCache = [
-  "/",
-  "/favicon.ico",
-  "/manifest.json",
-  "/index.html",
-  "/nav.html",
-  "/push.js",
-  "/js/content.js",
-  "/js/api.js",
-  "/js/db.js",
-  "/js/idb.js",
-  "/js/materialize.min.js",
-  "/css/style.css",
-  "/css/style.css.map",
-  "/css/materialize.min.css",
-  "/assets/header.jpg",
-  "/assets/logo.svg",
-  "/assets/icon32.png",
-  "/assets/icon96.png",
-  "/assets/icon192.png",
-  "/assets/icon512.png",
-  "/assets/svg/burger.svg",
-  "/assets/svg/heart-regular.svg",
-  "/assets/svg/heart-solid.svg",
-  "/assets/svg/trash.svg",
+  { url: "/", revision: "1" },
+  { url: "/favicon.ico", revision: "1" },
+  { url: "/manifest.json", revision: "1" },
+  { url: "/index.html", revision: "1" },
+  { url: "/nav.html", revision: "1" },
+  { url: "/push.js", revision: "1" },
+  { url: "/js/content.js", revision: "1" },
+  { url: "/js/api.js", revision: "1" },
+  { url: "/js/db.js", revision: "1" },
+  { url: "/js/idb.js", revision: "1" },
+  { url: "/js/materialize.min.js", revision: "1" },
+  { url: "/css/style.css", revision: "1" },
+  { url: "/css/style.css.map", revision: "1" },
+  { url: "/css/materialize.min.css", revision: "1" },
+  { url: "/assets/header.jpg", revision: "1" },
+  { url: "/assets/logo.svg", revision: "1" },
+  { url: "/assets/icon32.png", revision: "1" },
+  { url: "/assets/icon96.png", revision: "1" },
+  { url: "/assets/icon192.png", revision: "1" },
+  { url: "/assets/icon512.png", revision: "1" },
+  { url: "/assets/svg/burger.svg", revision: "1" },
+  { url: "/assets/svg/heart-regular.svg", revision: "1" },
+  { url: "/assets/svg/heart-solid.svg", revision: "1" },
+  { url: "/assets/svg/trash.svg", revision: "1" },
 ];
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
-});
+if (workbox) {
+  console.log(`Workbox berhasil dimuat`);
 
-self.addEventListener("fetch", (event) => {
-  const base_url = "https://api.football-data.org/v2/";
-  if (event.request.url.indexOf(base_url) > -1) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then(function (cache) {
-        return fetch(event.request).then(function (response) {
-          cache.put(event.request.url, response.clone());
-          return response;
-        });
-      })
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then(function (response) {
-        return response || fetch(event.request);
-      })
-    );
-  }
-});
+  workbox.precaching.precacheAndRoute(urlsToCache);
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
+  workbox.routing.registerRoute(
+    /.*(?:png|gif|jpg|jpeg|svg|ico)$/,
+    workbox.strategies.cacheFirst({
+      cacheName: "images-cache",
+      plugins: [
+        new workbox.cacheableResponse.Plugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.Plugin({
+          maxEntries: 100,
+          maxAgeSeconds: 30 * 24 * 60 * 60,
+        }),
+      ],
     })
   );
-});
+
+  workbox.routing.registerRoute(
+    new RegExp("https://api.football-data.org/v2/"),
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: "api-response",
+    })
+  );
+} else console.log(`Workbox gagal dimuat`);
 
 self.addEventListener("push", (event) => {
   let body;
   if (event.data) {
     body = event.data.text();
   } else {
-    body = "Push message no payload";
+    body = "Push message with no payload";
   }
   const options = {
     body: body,
-    icon: "img/notification.png",
+    icon: "assets/icon192.png",
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
