@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function loadNav() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-      if (this.readyState == 4) {
+      if (this.readyState === 4) {
         if (this.status != 200) return;
 
         document.querySelectorAll(".topnav, .sidenav").forEach((elm) => {
@@ -131,7 +131,6 @@ function loadHome() {
       `;
 
       document.querySelector("#body-content").innerHTML = html;
-      // showLoader();
     });
   });
 }
